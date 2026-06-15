@@ -1072,6 +1072,18 @@
     });
   }
 
+  // お気に入り店舗をリストの一番上にまとめる（STORES内の元の順序は各グループで維持）
+  function reorderCards(){
+    const fav = [], rest = [];
+    STORES.forEach(s=>{
+      const card = document.getElementById("card-"+s.id);
+      if(!card) return;
+      (rec(s.id).fav ? fav : rest).push(card);
+    });
+    fav.concat(rest).forEach(c=>cardsEl.appendChild(c));
+    if(noResultEl) cardsEl.appendChild(noResultEl); // 「該当なし」は常に末尾へ
+  }
+
   // ===== 店舗検索 =====
   const searchInput = document.getElementById("storeSearch");
   const searchBar   = document.getElementById("searchbar");
@@ -1210,6 +1222,7 @@
     });
     document.getElementById("count").textContent = visited;
     document.getElementById("bar").style.right = (100 - visited/TOTAL*100) + "%";
+    reorderCards();
     updateGrade(visited);
     return visited;
   }
